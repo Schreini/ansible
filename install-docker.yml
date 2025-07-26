@@ -35,8 +35,6 @@
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
-      debug:
-        msg: "Add Docker repo status: {{ apt_update_result }}"
 
     - name: Update apt and install docker-ce
       apt:
