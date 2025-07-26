@@ -1,7 +1,7 @@
 ---
 - hosts: all
 
-- tasks:
-  - name: echo hello world
-    bash:
-      - echo 'hello world'
+  tasks:
+    - name: echo hello world
+      bash:
+        - echo 'hello world'
