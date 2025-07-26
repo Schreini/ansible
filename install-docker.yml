@@ -35,22 +35,8 @@
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
-
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: yes
-      register: apt_update_result
-      # Optional: Anzeigen des Ergebnisses des Updates
       debug:
-        msg: "Apt cache update status: {{ apt_update_result }}"
-
-    - name: Upgrade all apt packages
-      ansible.builtin.apt:
-        upgrade: yes
-      register: apt_upgrade_result
-      # Optional: Anzeigen des Ergebnisses des Upgrades
-      debug:
-        msg: "Apt package upgrade status: {{ apt_upgrade_result }}"
+        msg: "Add Docker repo status: {{ apt_update_result }}"
 
     - name: Update apt and install docker-ce
       apt:
