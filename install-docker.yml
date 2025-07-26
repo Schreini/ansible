@@ -2,6 +2,6 @@
 - hosts: all
 
   tasks:
-    - name: echo hello world
-      bash:
-        - echo 'hello world'
+    - name: Print a message
+      shell: |
+        echo "hello worl"
