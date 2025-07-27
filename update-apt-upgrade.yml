@@ -1,0 +1,34 @@
+---
+- name: Update and upgrade all apt packages
+  hosts: linux # Ersetze dies mit deiner Host-Gruppe oder einzelnen Hosts
+  become: yes # Erfordert sudo-Rechte auf den Zielsystemen
+
+  tasks:
+    - name: Update apt package list
+      ansible.builtin.apt:
+        update_cache: yes
+      register: apt_update_result
+      changed_when: apt_update_result.changed # Markiert die Aufgabe als "changed", wenn Caches aktualisiert wurden
+      # Ignoriere Fehler, die auftreten können, wenn das Repository nicht erreichbar ist,
+      # aber trotzdem fortfahren möchten, um andere Updates durchzuführen.
+      # Dies ist optional und hängt von deinen Anforderungen ab.
+      # ignore_errors: yes
+
+    - name: Upgrade all apt packages
+      ansible.builtin.apt:
+        upgrade: dist # "dist" für ein vollständiges Distributions-Upgrade, "yes" für ein normales Upgrade
+      register: apt_upgrade_result
+      changed_when: apt_upgrade_result.changed # Markiert die Aufgabe als "changed", wenn Pakete aktualisiert wurden
+      # Ignoriere Fehler während des Upgrades, dies ist aber mit Vorsicht zu genießen.
+      # Für Produktionsumgebungen sollte man Fehler genau analysieren.
+      # ignore_errors: yes
+
+    - name: Autoremove unneeded packages
+      ansible.builtin.apt:
+        autoremove: yes
+      when: apt_upgrade_result.changed or apt_update_result.changed # Nur ausführen, wenn vorherige Aufgaben Änderungen vorgenommen haben
+
+    - name: Autoclean apt cache
+      ansible.builtin.apt:
+        autoclean: yes
+      when: apt_upgrade_result.changed or apt_update_result.changed # Nur ausführen, wenn vorherige Aufgaben Änderungen vorgenommen haben
