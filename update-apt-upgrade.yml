@@ -9,10 +9,12 @@
         update_cache: yes
       register: apt_update_result
       changed_when: apt_update_result.changed # Markiert die Aufgabe als "changed", wenn Caches aktualisiert wurden
-      # Ignoriere Fehler, die auftreten können, wenn das Repository nicht erreichbar ist,
-      # aber trotzdem fortfahren möchten, um andere Updates durchzuführen.
-      # Dies ist optional und hängt von deinen Anforderungen ab.
       # ignore_errors: yes
+
+    - debug:
+        var: apt_update_result.stdout_lines
+    - debug:
+        var: apt_update_result
 
     - name: Upgrade all apt packages
       ansible.builtin.apt:
