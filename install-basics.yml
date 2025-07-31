@@ -1,0 +1,29 @@
+---
+- name: Install Starship Prompt and Chezmoi
+  hosts: linux # Replace with your target host(s) or group(s)
+  become: yes # This allows the playbook to run commands with sudo privileges
+
+  tasks:
+    - name: Ensure git is installed
+      ansible.builtin.package:
+        name: git
+      tags:
+        - git
+
+    - name: Install chezmoi via official install script
+      ansible.builtin.shell: |
+        sh -c "$(curl -fsLS get.chezmoi.io)"
+      args:
+        creates: /usr/local/bin/chezmoi
+      tags:
+        - chezmoi
+
+    - name: Install Starship Prompt
+      ansible.builtin.shell: |
+        curl -sS https://starship.rs/install.sh | sh
+      args:
+        creates: /usr/local/bin/starship # This ensures the command only runs if starship isn't already there
+      register: starship_install
+      changed_when: starship_install.rc != 0 # Consider it changed if the script exited with a non-zero code
+      tags:
+        - starship
